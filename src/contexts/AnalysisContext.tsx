@@ -51,6 +51,10 @@ export const AnalysisProvider: React.FC<{ children: ReactNode }> = ({ children }
     setIsError(null);
     setAnalysisResult(null);
 
+    // Track start time to ensure minimum loading duration
+    const startTime = Date.now();
+    const MIN_LOADING_TIME = 3600; // 3.6 seconds to show full animation
+
     try {
       const response = await fetch('http://localhost:5000/api/check_news', {
         method: 'POST',
@@ -65,8 +69,25 @@ export const AnalysisProvider: React.FC<{ children: ReactNode }> = ({ children }
       }
 
       const data: AnalysisResult = await response.json();
+      
+      // Ensure minimum loading time for better UX
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+      
+      if (remainingTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+      }
+      
       setAnalysisResult(data);
     } catch (error) {
+      // Even on error, maintain minimum loading time
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+      
+      if (remainingTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+      }
+      
       setIsError('Failed to connect to the API. Make sure the Flask server is running.');
       console.error('API Error:', error);
     } finally {

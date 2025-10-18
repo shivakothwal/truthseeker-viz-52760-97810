@@ -1,12 +1,17 @@
-import { Shield, Loader2 } from 'lucide-react';
+import { Shield, Loader2, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { useAnalysis } from '@/contexts/AnalysisContext';
 import { toast } from '@/hooks/use-toast';
 
 const DetectionModule = () => {
   const { inputContent, setInputContent, isLoading, performAnalysis } = useAnalysis();
+
+  // Detect if input contains a URL
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  const containsUrl = urlPattern.test(inputContent);
 
   const handleCheck = async () => {
     if (!inputContent.trim()) {
@@ -40,6 +45,12 @@ const DetectionModule = () => {
           <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
           <div className="w-3 h-3 rounded-full bg-success/60"></div>
           <span className="ml-2 text-xs text-muted-foreground font-mono">SECURE TERMINAL</span>
+          {containsUrl && (
+            <Badge variant="secondary" className="ml-auto flex items-center gap-1 text-xs">
+              <LinkIcon className="h-3 w-3" />
+              URL Detected
+            </Badge>
+          )}
         </div>
         <Textarea
           id="news-input"
