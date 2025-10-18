@@ -5,6 +5,7 @@ import { useAnalysis } from '@/contexts/AnalysisContext';
 import DetectionModule from '@/components/DetectionModule';
 import ResultCard from '@/components/ResultCard';
 import UtilityBar from '@/components/UtilityBar';
+import ScanLoadingScreen from '@/components/ScanLoadingScreen';
 import { toast } from '@/hooks/use-toast';
 
 const Check = () => {
@@ -31,6 +32,9 @@ const Check = () => {
 
   return (
     <div className="min-h-screen bg-gradient-glow">
+      {/* Loading Screen Overlay */}
+      <ScanLoadingScreen isLoading={isLoading} />
+
       <main className="container mx-auto px-6 py-12 space-y-12">
         {/* Detection Module */}
         <DetectionModule />
@@ -41,7 +45,7 @@ const Check = () => {
           
           {analysisResult ? (
             <ResultCard />
-          ) : !isLoading ? (
+          ) : (
             <Card className="border-2 border-dashed border-border bg-card/30 animate-fade-in">
               <CardContent className="py-16 text-center">
                 <FileText className="h-16 w-16 mx-auto mb-6 text-muted-foreground opacity-50" />
@@ -49,19 +53,7 @@ const Check = () => {
                   No Analysis Yet
                 </h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Enter some news content above and click "Check News Credibility" to begin analysis
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="border-2 border-primary/30 bg-card/50 animate-pulse">
-              <CardContent className="py-16 text-center">
-                <div className="h-16 w-16 mx-auto mb-6 rounded-full bg-primary/20" />
-                <h3 className="text-xl font-semibold text-primary mb-2">
-                  Analyzing Content...
-                </h3>
-                <p className="text-muted-foreground">
-                  Please wait while we check the credibility
+                  Enter some news content above and click "Initiate Credibility Scan" to begin analysis
                 </p>
               </CardContent>
             </Card>
